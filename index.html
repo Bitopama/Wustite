@@ -1,0 +1,307 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computational Modeling of Wüstite Reduction Kinetics - Tata Steel Presentation</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Slide Navigation -->
+        <div class="slide-counter">
+            <span id="current-slide">1</span> / <span id="total-slides">14</span>
+        </div>
+
+        <div class="navigation-controls">
+            <button id="prev-btn" class="btn btn--secondary">← Previous</button>
+            <button id="next-btn" class="btn btn--primary">Next →</button>
+        </div>
+
+        <!-- Slide 1: Title Slide -->
+        <div class="slide active" data-slide="1">
+            <div class="slide-content title-slide">
+                <div class="title-section">
+                    <h1 class="main-title">Prediction of reduction kinetics of Fe-oxide</h1>
+                    <h2 class="subtitle">Industrial Internship Project</h2>
+                    <h3 class="company">Tata Steel Limited</h3>
+                </div>
+                <div class="presenter-info">
+                    <p class="presenter-detail"><strong>Presented by:</strong> Bitopama Modak & Fahim Ahmed</p>
+                    <p class="presenter-detail"><strong>Supervisor:</strong> Dr. Anindita Chakraborty & Dr. Swastika Banthia</p>
+                    <p class="presenter-detail"><strong>Date:</strong> 24th July 2025</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Executive Summary -->
+        <div class="slide" data-slide="2">
+            <div class="slide-content">
+                <h2 class="slide-title">Executive Summary</h2>
+                <div class="content-area">
+                    <ul class="bullet-list">
+                        <li>Simulated the reduction kinetics of wüstite on pure iron and Mn-alloyed steel using a published kinetic model.</li>
+                        <li>Validated the model by reproducing Figures 8, 9, and a modified Figure 10 from the reference paper.</li>
+                        <li>Applied Sievert’s law to calculate oxygen solubility; pO₂ estimated from dew point via an empirical relation.</li>
+                        <li>Analyzed how the parabolic rate constant varies with temperature and oxygen partial pressure.</li>
+                        <li>Modelled the growth of the reduced iron layer over time under different atmospheric conditions.</li>
+                        <li>All simulations were performed in Python with strict unit consistency maintained.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Industrial Context & Motivation -->
+        <div class="slide" data-slide="3">
+            <div class="slide-content">
+                <h2 class="slide-title">Industrial Context & Motivation</h2>
+                <div class="content-area">
+                    <ul class="bullet-list">
+                        <li>Advanced High Strength Steels (AHSS) are critical in the automotive industry to reduce vehicle weight, fuel consumption, and CO₂ emissions.</li>
+                        <li>AHSS is protected from corrosion by hot-dip galvanizing, but alloying elements like Mn, Si, Cr, and Al form stable oxides during annealing, reducing zinc wettability and coating quality.</li>
+                        <li>High dew point annealing promotes internal oxidation to mitigate surface oxides, but residual oxides still often remain on the steel surface.</li>
+                        <li>An emerging solution is to pre-form a thin wüstite layer that, upon reduction to iron, buries the remaining alloying oxides beneath a clean steel surface.</li>
+                        <li>The main objective of this project work is to study the reduction kinetics of wüstite layers formed on pure iron and Mn-containing steel sheets under a hydrogen-rich atmosphere.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Project Objectives -->
+        <div class="slide" data-slide="4">
+            <div class="slide-content">
+                <h2 class="slide-title">Project Objectives</h2>
+                <div class="content-area">
+                    <ul class="bullet-list">
+                        <li>Develop thermodynamic framework for wüstite reduction</li>
+                        <li>Implement computational model using Python programming</li>
+                        <li>Analyze temperature dependence of reaction kinetics</li>
+                        <li>Study effects of oxygen partial pressure on reduction rates</li>
+                        <li>Characterize iron layer growth mechanisms</li>
+                        <li>Validate model predictions </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+       <!-- Slide 5: Thermodynamic Framework -->
+<div class="slide" data-slide="5">
+  <div class="slide-content">
+    <h2 class="slide-title">Thermodynamic Framework & Oxygen Equilibria</h2>
+    <div class="content-area">
+      <ul class="bullet-list">
+        <li>
+          <strong>Standard Gibbs Free Energy Calculation:</strong><br />
+          \[ \Delta G^\circ = \Delta H^\circ - T \times \Delta S^\circ \]
+          Applies for both atomic oxygen and FeO.
+        </li>
+        <li>
+          <strong>Water Vapor Partial Pressure Estimation:</strong><br />
+          \( p_{H_2O} \) estimated from dew point (DP) using empirical relations:<br />
+          &nbsp;&nbsp;- Separate formulas for DP &lt; 0°C and DP ≥ 0°C.
+        </li>
+        <li>
+          <strong>Oxygen Partial Pressure Determination:</strong><br />
+          \[ p_{O_2} = 10^{\left[ 2 \times \left( 3.00 - \frac{13088}{T} + \log_{10} \left( \frac{p_{H_2O}}{p_{H_2}} \right) \right) \right]} \]
+        </li>
+        <li>
+          <strong>Oxygen Solubility in Iron (Sievert’s Law):</strong><br />
+          \[ N_O = K_s \cdot (p_{O_2})^{1/2}, \quad K_s = \exp\left(\frac{-\Delta G^\circ}{RT}\right) \]
+        </li>
+        <li>
+          <strong>Equilibrium \( p_{O_2} \) at Fe/FeO Interface:</strong><br />
+          \[ p_{O_2}^{Fe/FeO} = \exp\left(-\frac{2 \Delta G^\circ_{FeO}}{RT}\right) \]
+        </li>
+        <li>
+          <strong>Driving Force for Reduction:</strong><br />
+          \[ \Delta N_O = N_{Oe} - N_{Os} \]
+          Where \( N_{Oe} \) is equilibrium oxygen solubility and \( N_{Os} \) is surface oxygen solubility.
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 6: Oxygen Diffusivity and Iron Layer Growth -->
+<div class="slide" data-slide="6">
+  <div class="slide-content">
+    <h2 class="slide-title">Oxygen Diffusivity and Iron Layer Growth</h2>
+    <div class="content-area">
+      <ul class="bullet-list">
+        <li>
+          <strong>Oxygen diffusivity:</strong><br />
+          \[ D_O = D_0 \cdot \exp\left(-\frac{Q}{RT}\right) \]
+        </li>
+        <li>
+          <strong>Parabolic rate constant (kₚ) calculated as:</strong><br />
+          \[
+k_w = \sqrt{2} \cdot \left(\frac{M_O}{M_{Fe}}\right) \cdot \rho_{Fe} \cdot \left[ (1 - \delta) \cdot D_O \cdot \Delta N_O \right]^{1/2}
+\]<br>
+          with constants:
+          <ul>
+            <li>\( M_O = 16 \, \text{g/mol} \), \( M_{Fe} = 56 \, \text{g/mol} \)</li>
+            <li>\( \rho_{Fe} = 7.9 \, \text{g/cm}^3 \), \( \delta = 0.05 \)</li>
+          </ul>
+        </li>
+        <li>
+          <strong>Reduced iron layer growth follows a parabolic law:</strong><br />
+          \[ X^2(t) = 2 \cdot (1 - \delta) \cdot D_O \cdot \Delta N_O \cdot t \]
+        </li>
+        <li>
+          This captures the steady-state diffusion stage of wüstite reduction through the iron layer.
+        </li>
+        <li>
+          All calculations performed in Python, ensuring unit consistency throughout.
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+        <!-- Slide 7: Results Overview -->
+        <div class="slide" data-slide="6">
+            <div class="slide-content">
+                <h2 class="slide-title">Results Overview</h2>
+                <div class="content-area">
+                    <p class="intro-text">Three key areas of investigation:</p>
+                    <div class="results-sections">
+                        <div class="result-section">
+                            <h4>1. Temperature Dependence Analysis</h4>
+
+                        </div>
+                        <div class="result-section">
+                            <h4>2. Oxygen Pressure Effects</h4>
+                        </div>
+                        <div class="result-section">
+                            <h4>3. Growth Kinetics Characterization</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Temperature Dependence - Arrhenius Analysis -->
+        <div class="slide" data-slide="8">
+            <div class="slide-content">
+                <h2 class="slide-title">Temperature Dependence of Reduction Rate Constant</h2>
+                <div class="content-area results-layout">
+                    <div class="chart-container">
+                        <img src= "C:\Users\user\Downloads\fig8a.png" alt="Arrhenius Plot: Temperature Dependence of Wüstite Reduction Rate Constants" class="chart-image">
+                    </div>
+                    <div class="results-summary">
+                        <h4>Key Findings:</h4>
+                        <ul class="findings-list">
+                            <li>kw values computed using Eq. 11, accounting for temperature-dependent diffusivity in ferrite (BCC) and austenite (FCC).<li>
+                            <li>It shows a steady increase in kw with temperature, confirming thermally activated behavior.<li>
+                            <li>A transition near 912 °C marks the ferrite-to-austenite phase change.<li>
+                            <li> In the austenitic phase, kw rises more steeply due to higher diffusion activation energy in FCC.</ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+         <!-- Slide 8: Temperature Dependence - Arrhenius Analysis -->
+        <div class="slide" data-slide="8">
+            <div class="slide-content">
+                <h2 class="slide-title">Temperature Dependence of Reduction Rate Constant</h2>
+                <div class="content-area results-layout">
+                    <div class="chart-container">
+                        <img src= "C:\Users\user\Downloads\fig8b.png" alt="Arrhenius Plot: Temperature Dependence of Wüstite Reduction Rate Constants" class="chart-image">
+                    </div>
+                    <div class="results-summary">
+                        <h4>Key Findings:</h4>
+                        <ul class="findings-list">
+                            <li>ln(kw) vs. 1/T plot reveals linear Arrhenius behavior for both microstructural phases, confirming diffusion-controlled kinetics<li>
+                            <li>The results closely match experimental data from Mao and Sloof’s study, validating the adopted thermodynamic–kinetic model.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Oxygen Partial Pressure Effects -->
+        <div class="slide" data-slide="9">
+            <div class="slide-content">
+                <h2 class="slide-title">Effect of Oxygen Partial Pressure on Reduction Kinetics</h2>
+                <div class="content-area results-layout">
+                    <div class="chart-container">
+                        <img src="C:\Users\user\Downloads\fig9.png" alt="Effect of Oxygen Partial Pressure on Wüstite Reduction Rate Constants" class="chart-image">
+                    </div>
+                    <div class="results-summary">
+                        <h4>Key Findings:</h4>
+                        <ul class="findings-list">
+                            <li>The corresponding figure shows kw vs. log(pO₂) at 650°C, 750°C, and 850°C, with vertical lines marking the dissociation pO₂ of wüstite.
+                            </li>
+                            <li>At low pO₂, kw remains constant due to a strong solubility gradient (ΔNO), enabling sustained reduction.</li>
+                            <li>As pO₂ nears the dissociation threshold, kw drops sharply, indicating reduced diffusion driving force.</li>
+                            <li>Higher temperatures show increased kw overall, reflecting greater diffusivity and solubility.</li>
+                            <li>This highlights the importance of maintaining low pO₂ to ensure effective, diffusion-controlled reduction.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Iron Layer Growth Kinetics -->
+        <div class="slide" data-slide="10">
+            <div class="slide-content">
+                <h2 class="slide-title">Effect of Dew Point on Reduced Iron Layer Growth</h2>
+                <div class="content-area results-layout">
+                    <div class="chart-container">
+                        <img src="C:\Users\user\Downloads\fig10.png" alt="Iron Layer Growth Kinetics at Different Temperatures" class="chart-image">
+                    </div>
+                    <div class="results-summary">
+                        <h4>Key Findings:</h4>
+                        <ul class="findings-list">
+                            <li>Fe-layer growth was simulated under –70°C and 5°C dew points using diffusion-based kinetics</li>
+                            <li>Lower dew point (–70°C) leads to reduced pO₂, enhancing the solubility gradient and oxygen diffusion, resulting in faster Fe-layer growth.</li>
+                            <li>At 5°C, higher pH₂O and pO₂ diminish the driving force, slowing reduction.</li>
+                            <li>Findings highlight dew point as a key factor in oxide removal and surface preparation for galvanizing.
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Slide 13: Conclusions & Future Work -->
+        <div class="slide" data-slide="13">
+            <div class="slide-content">
+                <h2 class="slide-title">Conclusion</h2>
+                <div class="content-area">
+                    <div class="conclusions-layout">
+                        <div class="conclusions-section">
+                            <ul class="sub-bullet-list">
+                                <li>• Comprehensive kinetic model developed to study the steady-state reduction kinetics of wüstite (Fe₁₋δO) using a thermodynamic–diffusion approach.</li>
+                                <li>• Incorporated key parameters like temperature, dew point, and oxygen partial pressure into a Python-based simulation framework.</li>
+                                <li>• Accurately reproduced parabolic rate constants (kw) and oxygen concentration profiles under various annealing conditions.</li>
+                                <li>• Simulated the growth of the reduced iron layer, highlighting the influence of atmospheric conditions on reduction efficiency.
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Acknowledgments -->
+        <div class="slide" data-slide="14">
+            <div class="slide-content">
+                <h2 class="slide-title">Acknowledgments</h2>
+                <div class="content-area">
+                    <p class="intro-text">Special thanks to:</p>
+                    <ul class="bullet-list">
+                        <li>Tata Steel Limited for the internship opportunity</li>
+                        <li>Dr. Anindita Chakraborty & Dr. Swastika Banthia for guidance and support</li>
+                    </ul>
+                    <div class="discussion-section">
+                        <h3>Thank You</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
